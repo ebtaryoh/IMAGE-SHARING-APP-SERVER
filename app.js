@@ -13,7 +13,6 @@ app.use(cors());
 // app.use(morgan("dev"));
 app.use(express.json());
 
-// Routes
 app.use("/api/images", imageRouter);
 // app.use("/api/admin", adminRouter);
 app.use("/api/admin", adminLoginRouter);
