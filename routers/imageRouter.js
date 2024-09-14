@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middlewares/auth");
+// const auth = require("../middlewares/auth");
 const upload = require("../middlewares/multer");
 const {
   uploadImage,
@@ -8,8 +8,8 @@ const {
   downloadImage,
 } = require("../controllers/imageController");
 
-// Upload Image (Protected Route)
-router.post("/upload", auth, upload.single("image"), uploadImage);
+// Upload Image 
+router.post("/upload",  upload.single("image"), uploadImage);
 
 // Get All Images
 router.get("/", getAllImages);
