@@ -28,7 +28,11 @@ exports.uploadImage = async (req, res) => {
     // Remove uploaded file from server
     fs.unlinkSync(req.file.path);
 
-    res.status(201).json(newImage);
+    // Success response
+    res.status(201).json({
+      message: 'Image uploaded successfully',
+      data: newImage
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Image upload failed', details: err.message });
@@ -54,7 +58,11 @@ exports.downloadImage = async (req, res) => {
       return res.status(404).json({ msg: 'Image not found' });
     }
 
+    // Redirect to the image URL
     res.redirect(image.imageUrl);
+
+    // Success message (optional, since redirects don't typically include responses)
+    console.log('Image downloaded successfully');
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to download image', details: err.message });
