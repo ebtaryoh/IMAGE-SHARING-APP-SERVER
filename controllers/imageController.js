@@ -29,7 +29,7 @@ exports.uploadImage = async (req, res) => {
     fs.unlinkSync(req.file.path);
 
     // Success response
-    res.status(201).json({
+    res.status(200).json({
       message: 'Image uploaded successfully',
       data: newImage
     });
