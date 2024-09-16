@@ -1,7 +1,7 @@
-const Image = require('../models/imageModel');
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
-require('dotenv').config();
+const Image = require("../models/imageModel");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+require("dotenv").config();
 
 // Configure Cloudinary
 cloudinary.config({
@@ -14,7 +14,9 @@ cloudinary.config({
 exports.uploadImage = async (req, res) => {
   try {
     // Upload image to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "MFM-CAASO-YOUTH-PHOTO-DUMP",
+    });
 
     // Create a new image document
     const newImage = new Image({
@@ -30,12 +32,14 @@ exports.uploadImage = async (req, res) => {
 
     // Success response
     res.status(200).json({
-      message: 'Image uploaded successfully',
-      data: newImage
+      message: "Image uploaded successfully",
+      data: newImage,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Image upload failed', details: err.message });
+    res
+      .status(500)
+      .json({ error: "Image upload failed", details: err.message });
   }
 };
 
@@ -46,7 +50,7 @@ exports.getAllImages = async (req, res) => {
     res.status(200).json(images);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to retrieve images' });
+    res.status(500).json({ error: "Failed to retrieve images" });
   }
 };
 
@@ -55,16 +59,18 @@ exports.downloadImage = async (req, res) => {
   try {
     const image = await Image.findById(req.params.id);
     if (!image) {
-      return res.status(404).json({ msg: 'Image not found' });
+      return res.status(404).json({ msg: "Image not found" });
     }
 
     // Redirect to the image URL
     res.redirect(image.imageUrl);
 
     // Success message (optional, since redirects don't typically include responses)
-    console.log('Image downloaded successfully');
+    console.log("Image downloaded successfully");
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to download image', details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to download image", details: err.message });
   }
 };
