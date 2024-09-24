@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
-// const auth = require("../middlewares/auth");
 const upload = require("../middlewares/multer");
 const {
-  uploadImage,
+  uploadMultipleImages,
   getAllImages,
   downloadImage,
 } = require("../controllers/imageController");
 
-// Upload Image 
-router.post("/upload",  upload.single("image"), uploadImage);
+// Upload Multiple Images
+router.post("/upload-multiple", upload.array("images", 20), uploadMultipleImages); // 10 is the limit for number of images
 
 // Get All Images
 router.get("/", getAllImages);

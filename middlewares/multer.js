@@ -11,21 +11,18 @@ const storage = multer.diskStorage({
 // File type check
 function checkFileType(file, cb) {
   const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb('Error: Images Only!');
+    cb("Error: Images Only!");
   }
 }
 
 const upload = multer({
   storage,
-  // limits: { fileSize: 10000000 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb);
   },

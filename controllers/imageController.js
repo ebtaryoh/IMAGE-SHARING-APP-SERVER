@@ -10,36 +10,41 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Upload Image
-exports.uploadImage = async (req, res) => {
+// Upload Multiple Images
+exports.uploadMultipleImages = async (req, res) => {
   try {
-    // Upload image to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "MFM-CAASO-YOUTH-PHOTO-DUMP",
-    });
+    const imageFiles = req.files; // Access multiple files from multer
+    const uploadResults = [];
 
-    // Create a new image document
-    const newImage = new Image({
-      title: req.body.title,
-      caption: req.body.caption,
-      imageUrl: result.secure_url,
-      cloudinaryId: result.public_id,
-    });
-    await newImage.save();
+    // Loop through each file and upload to Cloudinary
+    for (let file of imageFiles) {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "MFM-CAASO-YOUTH-PHOTO-DUMP", // Specify the folder
+      });
 
-    // Remove uploaded file from server
-    fs.unlinkSync(req.file.path);
+      // Create a new image document for each file
+      const newImage = new Image({
+        title: req.body.title || "No Title", // You can make this dynamic
+        caption: req.body.caption || "No Caption",
+        imageUrl: result.secure_url,
+        cloudinaryId: result.public_id,
+      });
 
-    // Success response
+      await newImage.save();
+      uploadResults.push(newImage);
+
+      // Remove the file from the server after upload
+      fs.unlinkSync(file.path);
+    }
+
+    // Success response with all uploaded images
     res.status(200).json({
-      message: "Image uploaded successfully",
-      data: newImage,
+      message: "Images uploaded successfully",
+      data: uploadResults,
     });
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .json({ error: "Image upload failed", details: err.message });
+    res.status(500).json({ error: "Image upload failed", details: err.message });
   }
 };
 
@@ -64,13 +69,8 @@ exports.downloadImage = async (req, res) => {
 
     // Redirect to the image URL
     res.redirect(image.imageUrl);
-
-    // Success message (optional, since redirects don't typically include responses)
-    console.log("Image downloaded successfully");
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .json({ error: "Failed to download image", details: err.message });
+    res.status(500).json({ error: "Failed to download image", details: err.message });
   }
 };
