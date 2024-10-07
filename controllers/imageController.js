@@ -44,7 +44,9 @@ exports.uploadMultipleImages = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Image upload failed", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Image upload failed", details: err.message });
   }
 };
 
@@ -71,6 +73,8 @@ exports.downloadImage = async (req, res) => {
     res.redirect(image.imageUrl);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to download image", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to download image", details: err.message });
   }
 };
